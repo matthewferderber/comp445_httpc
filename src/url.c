@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "util.h"
 #include "url.h"
 
 void set_default_port(struct http_url* url_data) {
@@ -62,6 +63,6 @@ struct http_url* http_parse_url(const char* url) {
         set_default_path(url_data);
     }
 
-    printf("host: %s, port: %s, path: %s\n", url_data->host, url_data->port, url_data->path);
+    verbose("host: %s, port: %s, path: %s\n", url_data->host, url_data->port, url_data->path);
     return url_data;
 }

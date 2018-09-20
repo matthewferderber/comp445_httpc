@@ -16,12 +16,13 @@
 #include "help.h"
 #include "request.h"
 #include "url.h"
+#include "util.h"
 
 int main(int argc, char *argv[])
 {
     int flag;
 
-    if (argc > 1) {
+    if (argc > 2) {
         if (strcmp(argv[1], "get") == 0) {
         } else if (strcmp(argv[1], "post") == 0) {
         } else if (strcmp(argv[1], "help") == 0) {
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
         while ((flag = getopt(argc, argv, "vh:d:f:")) != -1) {
             switch (flag) {
                 case 'v':
-                    //set verbose flag
+                    set_verbose();
                     break;
                 case 'h':
                     //set header flag

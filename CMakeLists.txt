@@ -3,8 +3,7 @@ project(a1_40010150 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(httpc 
-	src/main.c 
+add_library(httpc_core SHARED
 	src/help.h 
 	src/help.c
 	src/options.h
@@ -13,4 +12,15 @@ add_executable(httpc
 	src/request.c 
 	src/request.h
 	src/url.h
-	src/url.c)
+	src/url.c
+	src/util.h
+	src/util.c)
+
+add_executable(httpc 
+	src/main.c)
+
+add_executable(httpc_tests
+	src/tests.c)
+
+target_link_libraries(httpc httpc_core)
+target_link_libraries(httpc_tests httpc_core)
