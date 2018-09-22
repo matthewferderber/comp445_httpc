@@ -8,17 +8,6 @@
 
 #include "url.h"
 
-struct http_header {
-	char* key;
-	char* value;
-};
-
-struct http_response {
-	struct http_header* http_headers;
-	char* raw_body;
-	char* http_status;
-};
-
 int establish_connection(struct http_url* http_data, int* sockfd);
 void get_data(struct http_url* http_data, int* sockfd);
 

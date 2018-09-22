@@ -19,14 +19,16 @@
 
 #define MAXDATASIZE 1000// max number of bytes we can get at once
 
-// get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
+// get addr from sockaddr, (either ipv4 or ipv6):
+void *get_addr(struct sockaddr *s_addr)
 {
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
+    // if address is ipv4, return in_addr
+    if (s_addr->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)s_addr)->sin_addr);
     }
 
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+    // return in6_addr
+    return &(((struct sockaddr_in6*)s_addr)->sin6_addr);
 }
 
 int establish_connection(struct http_url* http_data, int* sockfd) {
@@ -52,27 +54,27 @@ int establish_connection(struct http_url* http_data, int* sockfd) {
     for(p = addr; p != NULL; p = p->ai_next) {
         if ((*sockfd = socket(p->ai_family, p->ai_socktype,
                              p->ai_protocol)) == -1) {
-            perror("client: socket");
+            perror("Client: socket");
             continue;
         }
 
         if (connect(*sockfd, p->ai_addr, p->ai_addrlen) == -1) {
             close(*sockfd);
-            perror("client: connect");
+            perror("Client: connect");
             continue;
         }
-
         break;
     }
     if (p == NULL) {
-        fprintf(stderr, "client: failed to connect\n");
+        fprintf(stderr, "Client: unable to connect to host\n");
         return 2;
     }
 
-    inet_ntop(p->ai_family, get_in_addr(p->ai_addr), s, sizeof s);
-    verbose("client: connecting to %s\n", s);
+    // get human readable string address
+    inet_ntop(p->ai_family, get_addr(p->ai_addr), s, sizeof s);
+    verbose("Client: connecting to %s\n", s);
 
-    freeaddrinfo(addr); // free the linked list
+    freeaddrinfo(addr); // frees dynamic memory allocated for addr
     return 0;
 }
 
@@ -80,8 +82,8 @@ void get_data(struct http_url* http_data, int* sockfd) {
     char buf[MAXDATASIZE];
     char msg[MAXDATASIZE];
     sprintf(msg, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n\r\n", http_data->path, http_data->host);
-    int len = strlen(msg);
-    int bytes_sent, numbytes;
+    ssize_t bytes_sent, numbytes;
+    size_t len = strlen(msg);
     verbose("--Request--\n%s\n", msg);
     verbose(("sending -- "));
     if ((bytes_sent = send(*sockfd, msg, len, 0)) == -1) {
