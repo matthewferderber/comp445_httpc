@@ -19,14 +19,27 @@ void set_default_path(struct http_url* url_data) {
     url_data->path = "/";
 }
 
-
 // parses url into http_url struct
-struct http_url* http_parse_url(const char* url) {
+struct http_url* http_parse_url(const char* full_url) {
     struct http_url* url_data;
     url_data = malloc(sizeof(struct http_url));
     int i;
-    int len = strlen(url);
+    int len = strlen(full_url);
     bool has_port = false;
+    char* url = strstr(full_url, "://");
+    if (url != NULL) {
+        if (strncmp(full_url, "http", 4)) {
+            if (full_url[4] == 's') {
+                url_data->protocol = HTTPS;
+            } else {
+                url_data->protocol = HTTP;
+            }
+        }
+        url = url + 3;
+    } else {
+        url = full_url;
+    }
+
     for(i = 0; i < len; i++) {
         if (url[i] == ':') {
             url_data->host = malloc(sizeof(char) * i);
@@ -49,7 +62,7 @@ struct http_url* http_parse_url(const char* url) {
             break;
         }
     }
-    
+
     // if the whole string was traversed, no path was found.
     if (i == len) {
         if (has_port) {

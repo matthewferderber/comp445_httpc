@@ -16,6 +16,7 @@
 
 #include "util.h"
 #include "request.h"
+#include "types.h"
 
 #define MAXDATASIZE 1000// max number of bytes we can get at once
 
