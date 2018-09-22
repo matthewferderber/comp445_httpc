@@ -26,11 +26,21 @@ struct http_response {
     char* http_status;
 };
 
+struct http_query_parameter {
+    char* key;
+    char* value;
+};
 
 struct get_request {
     struct http_url url;
     struct http_header* http_headers;
-    struct http_query_parameters* query_parameters;
+    struct http_query_parameter* query_parameters;
+};
+
+struct post_request {
+    struct http_url url;
+    struct http_header* http_headers;
+    char* raw_body;
 };
 
 #endif //A1_40010150_TYPES_H

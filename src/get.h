@@ -10,5 +10,4 @@
 
 void http_get(int sockfd, struct get_request req, struct http_response* res);
 
-
 #endif //A1_40010150_GET_H

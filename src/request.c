@@ -100,5 +100,7 @@ void get_data(struct http_url* http_data, int* sockfd) {
     }
     verbose("recving -- bytes %d\n", numbytes);
     printf("--Response--\n");
+    //null terminate end of used buffer
+    buf[numbytes] = '\0';
     printf("%s\n", (char *) buf);
 }
