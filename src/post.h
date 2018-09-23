@@ -6,6 +6,9 @@
 #ifndef A1_40010150_POST_H
 #define A1_40010150_POST_H
 
-void post_data(struct http_url* http_data, int* sockfd);
+#include "types.h"
 
-#endif A1_40010150_POST_H
+char* http_headers_str(struct http_header* h, int num_headers);
+void post_data(struct post_request* req, int* sockfd);
+
+#endif //A1_40010150_POST_H
