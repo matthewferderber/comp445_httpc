@@ -36,7 +36,7 @@ int establish_connection(struct http_url* http_data, int* sockfd) {
 
     // declare addrinfo structs
     struct addrinfo hints, *addr, *p;
-    int status, numbytes;
+    int status;
     char s[INET6_ADDRSTRLEN];
 
 

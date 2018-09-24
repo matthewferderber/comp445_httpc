@@ -20,7 +20,7 @@ void set_default_path(struct http_url* url_data) {
 }
 
 // parses url into http_url struct
-struct http_url* http_parse_url(const char* full_url) {
+struct http_url* http_parse_url(char* full_url) {
     struct http_url* url_data;
     url_data = malloc(sizeof(struct http_url));
     int i;

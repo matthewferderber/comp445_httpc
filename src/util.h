@@ -8,7 +8,7 @@
 
 #include <stdbool.h>
 
-void verbose(char *format, ...);
+void verbose(const char *format, ...);
 void set_verbose();
 
 #endif //A1_40010150_UTIL_H

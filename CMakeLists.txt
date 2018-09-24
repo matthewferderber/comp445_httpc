@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
-project(a1_40010150 C)
-
 set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_FLAGS "-Wall")
+project(a1_40010150 C)
 
 add_library(httpc_core SHARED
 	src/help.h 

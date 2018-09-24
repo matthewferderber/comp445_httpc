@@ -12,7 +12,7 @@
 bool httpc_verbose = false;
 
 // Prints verbose infornation if flag is enabled
-void verbose(char *format, ...) {
+void verbose(const char *format, ...) {
     if (httpc_verbose) {
         va_list args;
         va_start(args, format);

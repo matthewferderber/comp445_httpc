@@ -41,7 +41,7 @@ char* http_headers_str(struct http_header* h, int num_headers) {
         strcat(header_s, h[i].value);
         strcat(header_s, "\r\n");
     }
-    printf("total size: %d, total alloc: %d\n", strlen(header_s), total);
+    printf("total size: %lu, total alloc: %d\n", strlen(header_s), total);
     printf("%s\n", header_s);
     return header_s;
 }
