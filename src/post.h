@@ -9,6 +9,6 @@
 #include "types.h"
 
 char* http_headers_str(struct http_header* h, int num_headers);
-void post_data(struct post_request* req, int* sockfd);
+void http_post(struct post_request* req, int* sockfd);
 
 #endif //A1_40010150_POST_H

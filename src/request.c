@@ -78,29 +78,3 @@ int establish_connection(struct http_url* http_data, int* sockfd) {
     freeaddrinfo(addr); // frees dynamic memory allocated for addr
     return 0;
 }
-
-void get_data(struct http_url* http_data, int* sockfd) {
-    char buf[MAXDATASIZE];
-    char msg[MAXDATASIZE];
-    sprintf(msg, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n\r\n", http_data->path, http_data->host);
-    ssize_t bytes_sent, numbytes;
-    size_t len = strlen(msg);
-    verbose("--Request--\n%s\n", msg);
-    verbose(("sending -- "));
-    if ((bytes_sent = send(*sockfd, msg, len, 0)) == -1) {
-        perror("send");
-        exit(1);
-    }
-
-    verbose("bytes %d\n", bytes_sent);
-
-    if ((numbytes = recv(*sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-        perror("recv");
-        exit(1);
-    }
-    verbose("recving -- bytes %d\n", numbytes);
-    printf("--Response--\n");
-    //null terminate end of used buffer
-    buf[numbytes] = '\0';
-    printf("%s\n", (char *) buf);
-}

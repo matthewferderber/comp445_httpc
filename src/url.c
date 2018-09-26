@@ -61,7 +61,7 @@ struct http_url* http_parse_url(char* full_url) {
             }
             url_data->path = malloc(sizeof(char) * (len - i) + 1);
             memcpy(url_data->path, url + i, len - i);
-            url_data->path[i] = '\0';
+            url_data->path[len - i] = '\0';
             // path is set, skip the rest of the string
             break;
         }

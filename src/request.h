@@ -9,6 +9,5 @@
 #include "url.h"
 
 int establish_connection(struct http_url* http_data, int* sockfd);
-void get_data(struct http_url* http_data, int* sockfd);
 
 #endif //A1_40010150_REQUEST_H

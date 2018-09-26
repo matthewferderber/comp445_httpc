@@ -46,7 +46,7 @@ char* http_headers_str(struct http_header* h, int num_headers) {
     return header_s;
 }
 
-void post_data(struct post_request* req, int* sockfd) {
+void http_post(struct post_request* req, int* sockfd) {
     char buf[MAXDATASIZE];
     char msg[MAXDATASIZE];
     sprintf(msg, "POST %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n\r\n", req->url.path, req->url.host);
