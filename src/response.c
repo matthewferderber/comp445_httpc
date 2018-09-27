@@ -22,6 +22,7 @@
 
 // returns number of headers parsed into header param
 // TODO: clean up this function
+// TODO: Seperate per-header parsing into new function in header.c (used for req and res)
 int parse_header(struct http_header** headers, char* raw_header) {
     int num_headers = 0;
     struct http_header* new_headers = malloc(sizeof(struct http_header) * num_headers);
