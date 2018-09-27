@@ -21,6 +21,7 @@ struct http_header {
 };
 
 struct http_response {
+    int num_headers;
     struct http_header* http_headers;
     char* raw_body;
     char* http_status;
@@ -33,6 +34,7 @@ struct http_query_parameter {
 
 struct get_request {
     struct http_url url;
+    int num_headers;
     struct http_header* http_headers;
     struct http_query_parameter* query_parameters;
 };

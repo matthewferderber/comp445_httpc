@@ -11,6 +11,8 @@ add_library(httpc_core SHARED
 	src/get.c 
 	src/request.c 
 	src/request.h
+	src/response.c 
+	src/response.h
 	src/url.h
 	src/url.c
 	src/util.h

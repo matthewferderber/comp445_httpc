@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
         } else if (strcmp(argv[1], "help") == 0) {
             print_help(argc, argv);
         } else {
+            print_help(argc, argv);
         }
 
     } else {

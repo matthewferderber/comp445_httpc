@@ -9,6 +9,7 @@
 #include "url.h"
 #include "types.h"
 
-struct http_response parse_response(struct http_response *res, char* raw_res);
+void read_response(int *sockfd);
+void parse_response(struct http_response *res, char* raw_status, char* raw_header, char* raw_body);
 
 #endif //A1_40010150_RESPONSE_H
