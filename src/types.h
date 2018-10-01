@@ -6,43 +6,43 @@
 #ifndef A1_40010150_TYPES_H
 #define A1_40010150_TYPES_H
 
-enum http_protocol { HTTP, HTTPS };
+typedef enum http_protocol_t { HTTP, HTTPS } HttpProtocol;
 
-struct http_url {
-    enum http_protocol protocol;
+typedef struct http_url_t {
+    HttpProtocol protocol;
     char* host;
     char* port;
     char* path;
-};
+} HttpUrl;
 
-struct http_header {
+typedef struct http_header_t {
     char* key;
     char* value;
-};
+} HttpHeader;
 
-struct http_response {
+typedef struct http_response_t {
     int num_headers;
-    struct http_header* http_headers;
+    HttpHeader* http_headers;
     char* raw_body;
     char* http_status;
-};
+} HttpResponse;
 
-struct http_query_parameter {
+typedef struct  http_query_parameter_t {
     char* key;
     char* value;
-};
+} HttpQueryParameter;
 
-struct get_request {
-    struct http_url url;
+typedef struct get_request_t {
+    HttpUrl url;
     int num_headers;
-    struct http_header* http_headers;
-    struct http_query_parameter* query_parameters;
-};
+    HttpHeader* http_headers;
+    HttpQueryParameter* query_parameters;
+} GetRequest;
 
-struct post_request {
-    struct http_url url;
-    struct http_header* http_headers;
+typedef struct post_request_t {
+    HttpUrl url;
+    HttpHeader* http_headers;
     char* raw_body;
-};
+} PostRequest;
 
 #endif //A1_40010150_TYPES_H
