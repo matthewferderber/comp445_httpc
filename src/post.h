@@ -8,7 +8,7 @@
 
 #include "types.h"
 
-char* http_headers_str(struct http_header* h, int num_headers);
-void http_post(struct post_request* req, int* sockfd);
+char* http_headers_str(HttpHeader* h, int num_headers);
+void http_post(PostRequest* req, int* sockfd);
 
 #endif //A1_40010150_POST_H

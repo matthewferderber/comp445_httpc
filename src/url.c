@@ -11,18 +11,18 @@
 #include "util.h"
 #include "url.h"
 
-void set_default_port(struct http_url* url_data) {
+void set_default_port(HttpUrl* url_data) {
     url_data->port = "80";
 }
 
-void set_default_path(struct http_url* url_data) {
+void set_default_path(HttpUrl* url_data) {
     url_data->path = "/";
 }
 
 // parses url into http_url struct
-struct http_url* http_parse_url(char* full_url) {
-    struct http_url* url_data;
-    url_data = malloc(sizeof(struct http_url));
+HttpUrl* http_parse_url(char* full_url) {
+    HttpUrl* url_data;
+    url_data = malloc(sizeof(HttpUrl));
     int i;
     int len = strlen(full_url);
     bool has_port = false;

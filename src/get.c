@@ -20,7 +20,7 @@
 #define MAXDATASIZE 512// max number of bytes we can get at once
 
 // struct http_response http_get(struct http_url* http_data, int* sockfd) {
-char *http_get(int* sockfd, struct get_request *req, struct http_response* res) {
+HttpResponse* http_get(int* sockfd, GetRequest* req, HttpResponse* res) {
     // allocate base buffer
     char *buf = malloc(sizeof(char) * MAXDATASIZE);
     // TODO: allow dynamic request size (find request length and then alloc the string)
@@ -29,13 +29,12 @@ char *http_get(int* sockfd, struct get_request *req, struct http_response* res) 
     size_t bytes_sent, len;
     len = strlen(msg);
     verbose("--Request--\n%s", msg);
-    v_verbose(("Sending ("));
+    v_verbose("Sending");
     if ((bytes_sent = send(*sockfd, msg, len, 0)) == -1) {
         perror("send");
         exit(1);
     }
-    v_verbose("bytes: %zu)\n", bytes_sent);
+    v_verbose("(bytes: %zu)\n", bytes_sent);
 
-    read_response(sockfd);
-    return buf;
+    return read_response(sockfd);
 }

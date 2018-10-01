@@ -32,7 +32,7 @@ void *get_addr(struct sockaddr *s_addr)
     return &(((struct sockaddr_in6*)s_addr)->sin6_addr);
 }
 
-int establish_connection(struct http_url* http_data, int* sockfd) {
+int establish_connection(HttpUrl* http_data, int* sockfd) {
 
     // declare addrinfo structs
     struct addrinfo hints, *addr, *p;

@@ -46,12 +46,13 @@ int main(int argc, char *argv[])
         }
         if (strcmp(argv[1], "get") == 0) {
             int sock;
-            struct http_url http_data = *http_parse_url(argv[optind]);
+            HttpUrl http_data = *http_parse_url(argv[optind]);
             establish_connection(&http_data, &sock);
-            struct get_request* get_r = malloc(sizeof(struct get_request));
+            GetRequest* get_r = malloc(sizeof(HttpResponse));
             get_r->url = http_data;
-            struct http_response* res = malloc(sizeof(struct http_response));
-            char *data = http_get(&sock, get_r, res);
+            HttpResponse* res = malloc(sizeof(HttpResponse));
+            HttpResponse* r = http_get(&sock, get_r, res);
+            printf("%s", r->raw_body);
         } else if (strcmp(argv[1], "post") == 0) {
         } else if (strcmp(argv[1], "help") == 0) {
             print_help(argc, argv);

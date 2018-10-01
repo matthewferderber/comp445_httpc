@@ -8,6 +8,6 @@
 
 #include "types.h"
 
-struct http_url* http_parse_url(char* url);
+HttpUrl* http_parse_url(char* url);
 
 #endif //A1_40010150_URL_H

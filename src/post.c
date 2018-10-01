@@ -28,7 +28,7 @@ int write_str(char* str, char* str2) {
     return n;
 }
 
-char* http_headers_str(struct http_header* h, int num_headers) {
+char* http_headers_str(HttpHeader* h, int num_headers) {
     int i, total = 0;
     char* header_s = NULL;
     for(i = 0; i < num_headers; i++) {
@@ -46,7 +46,7 @@ char* http_headers_str(struct http_header* h, int num_headers) {
     return header_s;
 }
 
-void http_post(struct post_request* req, int* sockfd) {
+void http_post(PostRequest* req, int* sockfd) {
     char buf[MAXDATASIZE];
     char msg[MAXDATASIZE];
     sprintf(msg, "POST %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n\r\n", req->url.path, req->url.host);

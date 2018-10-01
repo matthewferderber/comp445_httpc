@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "response.h"
+#include "header.h"
 #include "util.h"
 
 #define MAXDATASIZE 512// max number of bytes we can get at once
@@ -23,50 +24,25 @@
 // returns number of headers parsed into header param
 // TODO: clean up this function
 // TODO: Seperate per-header parsing into new function in header.c (used for req and res)
-int parse_header(struct http_header** headers, char* raw_header) {
+int parse_headers(HttpHeader** headers, char* raw_header) {
     int num_headers = 0;
-    struct http_header* new_headers = malloc(sizeof(struct http_header) * num_headers);
+    HttpHeader* new_headers = malloc(sizeof(HttpHeader));
     int i;
-    int num_bytes = 0;
     int next_start = 0;
     for (i = 0; raw_header[i] != '\0'; i++) {
         if (raw_header[i] == '\r' && raw_header[i + 1] == '\n') {
-            char *h = malloc(sizeof(char) * (i - next_start + 1));
-            memcpy(h, raw_header + next_start, i - next_start);
-            h[i - next_start] = '\0';
-            int k;
-            char *key = NULL;
-            char *val;
-            for (k = 0; h[k] != '\0'; k++) {
-                if (h[k] == ':') {
-                    free(key);
-                    key = malloc(sizeof(char) * k + 1);
-                    memcpy(key, h, k);
-                    key[k] = '\0';
-                    break;
-                }
-            }
-            if (key != NULL) {
-                val = strdup(h + k + 2);
-                int key_len = k;
-                size_t val_len = strlen(val);
-                num_bytes += key_len + 1;
-                num_bytes += val_len + 1;
-                num_headers++;
-                new_headers = realloc(new_headers, sizeof(new_headers) * num_headers + num_bytes);
-                if (headers == NULL) {
-                    printf("Out of memory\n");
-                    exit(1);
-                }
-                new_headers[num_headers - 1].key = malloc(sizeof(char) * (key_len + 1));
-                new_headers[num_headers - 1].value = malloc(sizeof(char) * (val_len + 1));
-                memcpy(new_headers[num_headers - 1].key, key, key_len);
-                new_headers[num_headers - 1].key[key_len] = '\0';
-                memcpy(new_headers[num_headers - 1].value, val, val_len);
-                new_headers[num_headers - 1].value[val_len] = '\0';
-            }
-            next_start = i + 2;
+            if (raw_header[i + 2] != '\0') {
+                char* h = malloc(sizeof(char) * (i - next_start + 1));
+                memcpy(h, raw_header + next_start, i - next_start);
+                h[i - next_start] = '\0';
 
+                num_headers++;
+                if (num_headers > 1) {
+                    new_headers = realloc(new_headers, sizeof(HttpHeader) * num_headers);
+                }
+                new_headers[num_headers - 1] = *parse_header(h);
+                next_start = i + 2;
+            }
         }
     }
     *headers = new_headers;
@@ -74,25 +50,31 @@ int parse_header(struct http_header** headers, char* raw_header) {
 }
 
 // TODO: impl status parse and body parse
-void parse_response(struct http_response* res, char* raw_status, char* raw_header, char* raw_body) {
-    struct http_header* header = malloc(sizeof(struct http_header));
-    int num_headers = parse_header(&header, raw_header);
-    res->http_headers = header;
-    res->num_headers = num_headers;
+void parse_response(HttpResponse** res, char* raw_status, char* raw_header, char* raw_body) {
+    HttpHeader* header = malloc(sizeof(HttpHeader));
+    int num_headers = parse_headers(&header, raw_header);
+    v_verbose("%d headers parsed from response\n", num_headers);
+    (*res)->http_headers = header;
+    (*res)->num_headers = num_headers;
+    (*res)->raw_body = raw_body;
+    (*res)->http_status = "abc";
 }
 
-void read_response(int *sockfd) {
+HttpResponse* read_response(int *sockfd) {
     char* buf = malloc(sizeof(char) * MAXDATASIZE);
-    size_t numbytes, chunk, content_length, header_length, total_bytes;
+    char* start_of_header = NULL;
+    char* end_of_header = NULL;
+    char* raw_header = NULL;
+    char* raw_status = NULL;
+    char* raw_body = NULL;
+    size_t numbytes, chunk, content_length, header_length, status_length, total_bytes;
+    header_length = 0;
     total_bytes = 0;
     chunk = 0;
     int i = 1;
-    char* start_of_header = NULL;
     int num_reallocs = 0;
     _Bool found_content_length = false;
     _Bool found_header_length = false;
-    char* raw_header;
-    char* raw_status;
     // recv until numbytes is 0 or less (connection close or error)
     while ((numbytes = recv(*sockfd, buf + total_bytes, MAXDATASIZE-1, 0)) > 0) {
       i++;
@@ -118,17 +100,19 @@ void read_response(int *sockfd) {
         start_of_header = strstr(buf, "\r\n") + 2;
         if (start_of_header != NULL) {
             //TODO: change this to use memcpy
+            status_length = char_distance(start_of_header, buf);
             raw_status = strndup(buf, char_distance(start_of_header - 2, buf));
         }
       }
 
-      if (found_content_length && !found_header_length) {
-        char* end_of_header = strstr(buf, "\r\n\r\n");
+      if (!found_header_length) {
+        end_of_header = strstr(buf, "\r\n\r\n");
         if (end_of_header != NULL) {
           found_header_length = true;
-          header_length = char_distance(end_of_header + 4, buf);
-          raw_header = malloc(sizeof(char) * header_length);
+          header_length = char_distance(end_of_header, start_of_header);
+          raw_header = malloc(sizeof(char) * (header_length + 1));
           memcpy(raw_header, start_of_header, header_length);
+          raw_header[header_length] = '\0';
         }
         v_verbose("Header Size: %zu\n", header_length);
       }
@@ -153,11 +137,19 @@ void read_response(int *sockfd) {
         perror("recv");
         exit(1);
     }
-    char* raw_body = strdup(buf + header_length);
-    v_verbose("# of recvs: %d\n# of reallocs: %d\n", i, num_reallocs);
     // null terminate end of buffer
     buf[total_bytes] = '\0';
+    //raw_body is buf without status and header (and new-lines)
+    raw_body = buf + header_length + status_length + 4;
+
+    v_verbose("# of recvs: %d\n# of reallocs: %d\n", i, num_reallocs);
+    // if header isn't set, there was no double escape therefore, no body
+    if (raw_header == NULL) {
+        raw_header = start_of_header;
+        raw_body = NULL;
+    }
     verbose("Total bytes: %d\n", total_bytes);
-    struct http_response* res = malloc(sizeof(struct http_response) * 1);
-    parse_response(res, raw_status, raw_header, raw_body);
+    HttpResponse* res = malloc(sizeof(HttpResponse) * 1);
+    parse_response(&res, raw_status, raw_header, raw_body);
+    return res;
 }
