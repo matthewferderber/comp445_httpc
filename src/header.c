@@ -23,9 +23,9 @@ HttpHeader* parse_header(char* raw_head) {
       }
   }
   if (key != NULL) {
-      size_t val_len = strlen(raw_head + k + 2);
+      size_t val_len = strlen(raw_head + k + 1);
       val = malloc(sizeof(char) * val_len + 1);
-      memcpy(val, raw_head + k + 2, val_len);
+      memcpy(val, raw_head + k + 1, val_len);
       val[val_len] = '\0';
       // int key_len = k;
       h->key = key;
@@ -34,9 +34,19 @@ HttpHeader* parse_header(char* raw_head) {
   return h;
 }
 
-void print_headers(HttpResponse* r) {
+void print_headers(HttpHeader* h, int num_headers) {
     int i;
-    for(i = 0; i < r->num_headers; i++) {
-        printf("%s: %s", r->http_headers[i].key, r->http_headers[i].value);
+    for(i = 0; i < num_headers; i++) {
+        printf("%s: %s\n", h[i].key, h[i].value);
     }
+}
+
+void http_header_new(HttpHeader* h, char* key, char* value) {
+    h = malloc(sizeof(HttpHeader));
+    h->key = key;
+    h->value = value;
+}
+void http_header_destroy(HttpHeader* h) {
+    free(h);
+    h = NULL;
 }
