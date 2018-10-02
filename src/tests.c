@@ -15,7 +15,7 @@ int main() {
     url.host = "google.ca";
     url.port = "80";
     url.path = "/";
-    r.url = url;
+    r.url = &url;
     HttpHeader headers[1];
     headers[0].key = "Key";
     headers[0].value = "Value";
