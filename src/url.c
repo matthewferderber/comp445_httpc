@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "util.h"
 #include "url.h"
+#include "util.h"
 
 void set_default_port(HttpUrl* url_data) {
     url_data->port = "80";
@@ -94,4 +94,12 @@ char* protocol_str(HttpProtocol p) {
         case HTTPS:
             return "https";
     }
+}
+
+void http_url_destroy(HttpUrl* url) {
+    free(url->host);
+    //free(url->port);
+    free(url->path);
+    free(url);
+    url = NULL;
 }

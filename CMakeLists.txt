@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_FLAGS "-Wall")
+set(CMAKE_C_FLAGS "-Wall -Wpedantic -Wextra")
+set(CMAKE_BUILD_TYPE Debug)
 project(a1_40010150 C)
 
 add_library(httpc_core SHARED
 	src/help.h 
 	src/help.c
 	src/options.h
-	src/get.h
-	src/get.c 
 	src/request.c 
 	src/request.h
 	src/response.c 
@@ -18,8 +17,6 @@ add_library(httpc_core SHARED
 	src/util.h
 	src/util.c
 	src/types.h
-	src/post.h
-	src/post.c
 	src/header.c
 	src/header.h
 	src/file_reader.h

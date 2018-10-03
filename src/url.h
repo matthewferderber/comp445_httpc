@@ -10,5 +10,6 @@
 
 HttpUrl* http_parse_url(char* url);
 char* protocol_str(HttpProtocol p);
+void http_url_destroy(HttpUrl* url);
 
 #endif //A1_40010150_URL_H

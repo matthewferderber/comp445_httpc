@@ -34,20 +34,6 @@ typedef struct  http_query_parameter_t {
     char* value;
 } HttpQueryParameter;
 
-typedef struct get_request_t {
-    HttpUrl* url;
-    int num_headers;
-    HttpHeader* http_headers;
-    HttpQueryParameter* query_parameters;
-} GetRequest;
-
-typedef struct post_request_t {
-    HttpUrl* url;
-    int num_headers;
-    HttpHeader* http_headers;
-    char* raw_body;
-} PostRequest;
-
 typedef struct http_request_t {
     char* method;
     HttpUrl* url;

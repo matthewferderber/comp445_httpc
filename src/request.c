@@ -16,6 +16,8 @@
 
 #include "util.h"
 #include "request.h"
+#include "url.h"
+#include "header.h"
 #include "types.h"
 
 
@@ -53,7 +55,7 @@ int establish_connection(HttpUrl* http_data, int* sockfd) {
     // connect to the first possible address
     for(p = addr; p != NULL; p = p->ai_next) {
         if ((*sockfd = socket(p->ai_family, p->ai_socktype,
-                             p->ai_protocol)) == -1) {
+                        p->ai_protocol)) == -1) {
             perror("Client: socket");
             continue;
         }
@@ -79,7 +81,8 @@ int establish_connection(HttpUrl* http_data, int* sockfd) {
 }
 
 char* construct_query_string(HttpQueryParameter* params, int num_params) {
-    char* buf = malloc(sizeof(char) * MAXDATASIZE);
+    //char* buf = malloc(sizeof(char) * MAXDATASIZE);
+    char* buf;
     size_t len = 0;
     size_t k_size = 0;
     size_t v_size = 0;
@@ -132,15 +135,7 @@ char* construct_header_str(HttpHeader* headers, int num_headers) {
     return buf;
 }
 
-char* construct_url(HttpUrl* url, HttpQueryParameter* params, int num_params) {
-    //char* buf = construct_query_string(params, num_params);
-    char* full_url = malloc(sizeof(char) * MAXDATASIZE);
-    sprintf(full_url, "%s://%s", protocol_str(url->protocol), url->host);
-    return full_url;
-}
-
 void send_request(int sockfd, HttpRequest* r) {
-    //char* url = construct_url(r->url, r->query_parameters, r->num_params);
     char* headers = construct_header_str(r->http_headers, r->num_headers);
     char* msg = malloc(sizeof(char) * MAXDATASIZE);
     size_t len;
@@ -158,4 +153,20 @@ void send_request(int sockfd, HttpRequest* r) {
         exit(1);
     }
     v_verbose("(bytes: %zu)\n", bytes_sent);
+    free(msg);
+    free(headers);
+}
+
+void http_request_destroy(HttpRequest* r) {
+    http_url_destroy(r->url);
+    int i;
+    for (i = 0; i < r->num_headers; i++) {
+        http_header_destroy(r->http_headers);
+    }
+   // for (i = 0; i < r->num_params; i++) {
+   //     http_query_parameter_destroy(r->query_parameters);
+   // }
+    //free(r->raw_body);
+    free(r);
+    r = NULL;
 }

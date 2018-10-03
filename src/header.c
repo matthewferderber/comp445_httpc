@@ -47,6 +47,9 @@ void http_header_new(HttpHeader* h, char* key, char* value) {
     h->value = value;
 }
 void http_header_destroy(HttpHeader* h) {
-    free(h);
+    free(h->key);
+    free(h->value);
+    //free(h);
     h = NULL;
 }
+

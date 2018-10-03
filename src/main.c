@@ -15,10 +15,10 @@
 #include <getopt.h>
 
 #include "help.h"
+#include "types.h"
 #include "request.h"
 #include "response.h"
 #include "header.h"
-#include "get.h"
 #include "url.h"
 #include "util.h"
 #include "file_reader.h"
@@ -70,11 +70,13 @@ int main(int argc, char *argv[])
             req->url = url;
             req->raw_body = NULL;
             send_request(sock, req);
+            http_request_destroy(req);
             HttpResponse* r = read_response(sock);
             if (is_verbose()) {
                 print_headers(r->http_headers, r->num_headers);
             }
             printf("%s", r->raw_body);
+            http_response_destroy(r);
         } else if (strcmp(argv[1], "post") == 0) {
             HttpUrl* url = http_parse_url(argv[optind]);
             establish_connection(url, &sock);
@@ -85,8 +87,10 @@ int main(int argc, char *argv[])
             req->url = url;
             req->raw_body = raw_body;
             send_request(sock, req);
+            http_request_destroy(req);
             HttpResponse* r = read_response(sock);
             printf("%s", r->raw_body);
+            http_response_destroy(r);
         } else if (strcmp(argv[1], "help") == 0) {
             print_help(argc, argv);
         } else {

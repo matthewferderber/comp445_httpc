@@ -11,5 +11,6 @@
 
 HttpResponse* read_response(int sockfd);
 void parse_response(HttpResponse* res, char* raw_status, char* raw_header, char* raw_body);
+void http_response_destroy(HttpResponse* r);
 
 #endif //A1_40010150_RESPONSE_H

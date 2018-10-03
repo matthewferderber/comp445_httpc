@@ -4,13 +4,12 @@
 //
 
 #include <stdio.h>
-#include "post.h"
 #include "types.h"
 
 int main() {
     printf("Running httpc tests\n");
 
-    PostRequest r = {};
+    HttpRequest r = {};
     HttpUrl url = {};
     url.host = "google.ca";
     url.port = "80";
@@ -20,7 +19,4 @@ int main() {
     headers[0].key = "Key";
     headers[0].value = "Value";
     r.http_headers = headers;
-
-    char* headers_str = http_headers_str(headers, 1);
-    printf("%s\n", headers_str);
 }
