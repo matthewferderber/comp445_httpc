@@ -146,12 +146,12 @@ void send_request(int sockfd, HttpRequest* r) {
     size_t len;
     if (r->raw_body != NULL) {
         size_t body_len = strlen(r->raw_body);
-        len = sprintf(msg, "%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %zu\r\n%s\r\n%s", r->method, r->url->path, r->url->host, body_len, headers, r->raw_body);
+        len = sprintf(msg, "%s %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\nContent-Length: %zu\r\n%s\r\n%s", r->method, r->url->path, r->url->host, body_len, headers, r->raw_body);
     } else {
-        len = sprintf(msg, "%s %s HTTP/1.1\r\nHost: %s\r\n%s\r\n", r->method, r->url->path, r->url->host, headers);
+        len = sprintf(msg, "%s %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n%s\r\n", r->method, r->url->path, r->url->host, headers);
     }
     size_t bytes_sent;
-    verbose("--Request--\n%s--Request--\n", msg);
+    verbose("%s", msg);
     v_verbose("Sending");
     if ((bytes_sent = send(sockfd, msg, len, 0)) == -1) {
         perror("send");

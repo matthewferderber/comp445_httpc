@@ -35,6 +35,9 @@ void v_verbose(const char *format, ...) {
         va_end(args);
     }
 }
+bool is_verbose() {
+    return httpc_verbose;
+}
 
 void set_verbose() {
     httpc_verbose = true;

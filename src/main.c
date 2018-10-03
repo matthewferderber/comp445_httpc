@@ -71,6 +71,9 @@ int main(int argc, char *argv[])
             req->raw_body = NULL;
             send_request(sock, req);
             HttpResponse* r = read_response(sock);
+            if (is_verbose()) {
+                print_headers(r->http_headers, r->num_headers);
+            }
             printf("%s", r->raw_body);
         } else if (strcmp(argv[1], "post") == 0) {
             HttpUrl* url = http_parse_url(argv[optind]);

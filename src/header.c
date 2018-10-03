@@ -23,11 +23,11 @@ HttpHeader* parse_header(char* raw_head) {
       }
   }
   if (key != NULL) {
+      raw_head[k + 1] == ' ' ? k++ : 0;
       size_t val_len = strlen(raw_head + k + 1);
       val = malloc(sizeof(char) * (val_len + 1));
       memcpy(val, raw_head + k + 1, val_len);
       val[val_len] = '\0';
-      // int key_len = k;
       h->key = key;
       h->value = val;
   }
