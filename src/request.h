@@ -9,5 +9,6 @@
 #include "url.h"
 
 int establish_connection(HttpUrl* http_data, int* sockfd);
+void send_request(int sockfd, HttpRequest* r);
 
 #endif //A1_40010150_REQUEST_H

@@ -18,8 +18,7 @@
 #include "response.h"
 #include "header.h"
 #include "util.h"
-
-#define MAXDATASIZE 512// max number of bytes we can get at once
+#include "types.h"
 
 // returns number of headers parsed into header param
 // TODO: clean up this function
@@ -50,17 +49,17 @@ int parse_headers(HttpHeader** headers, char* raw_header) {
 }
 
 // TODO: impl status parse and body parse
-void parse_response(HttpResponse** res, char* raw_status, char* raw_header, char* raw_body) {
+void parse_response(HttpResponse* res, char* raw_status, char* raw_header, char* raw_body) {
     HttpHeader* header = malloc(sizeof(HttpHeader));
     int num_headers = parse_headers(&header, raw_header);
     v_verbose("%d headers parsed from response\n", num_headers);
-    (*res)->http_headers = header;
-    (*res)->num_headers = num_headers;
-    (*res)->raw_body = raw_body;
-    (*res)->http_status = "abc";
+    res->http_headers = header;
+    res->num_headers = num_headers;
+    res->raw_body = raw_body;
+    res->http_status = "200";
 }
 
-HttpResponse* read_response(int *sockfd) {
+HttpResponse* read_response(int sockfd) {
     char* buf = malloc(sizeof(char) * MAXDATASIZE);
     char* start_of_header = NULL;
     char* end_of_header = NULL;
@@ -76,7 +75,7 @@ HttpResponse* read_response(int *sockfd) {
     _Bool found_content_length = false;
     _Bool found_header_length = false;
     // recv until numbytes is 0 or less (connection close or error)
-    while ((numbytes = recv(*sockfd, buf + total_bytes, MAXDATASIZE-1, 0)) > 0) {
+    while ((numbytes = recv(sockfd, buf + total_bytes, MAXDATASIZE-1, 0)) > 0) {
       i++;
       total_bytes += numbytes;
       chunk += numbytes;
@@ -118,7 +117,7 @@ HttpResponse* read_response(int *sockfd) {
       }
 
       // if content_length exists and the body has been received, exit recv
-      if (found_content_length && (total_bytes - header_length) == content_length) {
+      if (found_content_length && (total_bytes - (header_length + status_length + 4)) == content_length) {
         v_verbose("Content-Length reached, closing recv\n");
         break;
       }
@@ -150,6 +149,6 @@ HttpResponse* read_response(int *sockfd) {
     }
     verbose("Total bytes: %d\n", total_bytes);
     HttpResponse* res = malloc(sizeof(HttpResponse) * 1);
-    parse_response(&res, raw_status, raw_header, raw_body);
+    parse_response(res, raw_status, raw_header, raw_body);
     return res;
 }

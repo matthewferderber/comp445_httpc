@@ -81,6 +81,17 @@ HttpUrl* http_parse_url(char* full_url) {
         set_default_path(url_data);
     }
 
+    url_data->protocol = HTTP;
+
     verbose("host: %s, port: %s, path: %s\n\0", url_data->host, url_data->port, url_data->path);
     return url_data;
+}
+
+char* protocol_str(HttpProtocol p) {
+    switch (p) {
+        case HTTP:
+            return "http";
+        case HTTPS:
+            return "https";
+    }
 }

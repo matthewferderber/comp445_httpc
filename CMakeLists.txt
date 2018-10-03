@@ -21,7 +21,9 @@ add_library(httpc_core SHARED
 	src/post.h
 	src/post.c
 	src/header.c
-	src/header.h)
+	src/header.h
+	src/file_reader.h
+	src/file_reader.c)
 	
 add_executable(httpc 
 	src/main.c)

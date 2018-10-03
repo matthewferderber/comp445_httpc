@@ -6,6 +6,8 @@
 #ifndef A1_40010150_TYPES_H
 #define A1_40010150_TYPES_H
 
+#define MAXDATASIZE 512
+
 typedef enum http_protocol_t { HTTP, HTTPS } HttpProtocol;
 
 typedef struct http_url_t {
@@ -45,5 +47,15 @@ typedef struct post_request_t {
     HttpHeader* http_headers;
     char* raw_body;
 } PostRequest;
+
+typedef struct http_request_t {
+    char* method;
+    HttpUrl* url;
+    int num_headers;
+    int num_params;
+    HttpHeader* http_headers;
+    HttpQueryParameter* query_parameters;
+    char* raw_body;
+} HttpRequest;
 
 #endif //A1_40010150_TYPES_H

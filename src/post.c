@@ -17,8 +17,6 @@
 #include "post.h"
 #include "util.h"
 
-#define MAXDATASIZE 1000// max number of bytes we can get at once
-
 // returns number of characters written
 int write_str(char* str, char* str2) {
     int n = 0;
@@ -49,7 +47,7 @@ char* http_headers_str(HttpHeader* h, int num_headers) {
 void http_post(PostRequest* req, int* sockfd) {
     char buf[MAXDATASIZE];
     char msg[MAXDATASIZE];
-    sprintf(msg, "POST %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n\r\n", req->url.path, req->url.host);
+    sprintf(msg, "POST %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: httpc\r\n\r\n", req->url->path, req->url->host);
     ssize_t bytes_sent, numbytes;
     size_t len = strlen(msg);
     verbose("--Request--\n%s\n", msg);

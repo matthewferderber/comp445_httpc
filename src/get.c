@@ -17,10 +17,8 @@
 #include "util.h"
 #include "response.h"
 
-#define MAXDATASIZE 512// max number of bytes we can get at once
-
 // struct http_response http_get(struct http_url* http_data, int* sockfd) {
-HttpResponse* http_get(int* sockfd, GetRequest* req, HttpResponse* res) {
+HttpResponse* http_get(int sockfd, GetRequest* req, HttpResponse* res) {
     // allocate base buffer
     char *buf = malloc(sizeof(char) * MAXDATASIZE);
     // TODO: allow dynamic request size (find request length and then alloc the string)
@@ -30,7 +28,7 @@ HttpResponse* http_get(int* sockfd, GetRequest* req, HttpResponse* res) {
     len = strlen(msg);
     verbose("--Request--\n%s--Request--\n", msg);
     v_verbose("Sending");
-    if ((bytes_sent = send(*sockfd, msg, len, 0)) == -1) {
+    if ((bytes_sent = send(sockfd, msg, len, 0)) == -1) {
         perror("send");
         exit(1);
     }

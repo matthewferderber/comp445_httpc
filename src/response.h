@@ -9,7 +9,7 @@
 #include "url.h"
 #include "types.h"
 
-HttpResponse* read_response(int *sockfd);
-void parse_response(HttpResponse** res, char* raw_status, char* raw_header, char* raw_body);
+HttpResponse* read_response(int sockfd);
+void parse_response(HttpResponse* res, char* raw_status, char* raw_header, char* raw_body);
 
 #endif //A1_40010150_RESPONSE_H

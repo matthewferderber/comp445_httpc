@@ -16,22 +16,21 @@
 
 #include "help.h"
 #include "request.h"
+#include "response.h"
 #include "header.h"
 #include "get.h"
 #include "url.h"
 #include "util.h"
-
-HttpHeader* collect_header(char* opt) {
-    
-}
+#include "file_reader.h"
 
 int main(int argc, char *argv[])
 {
     int flag;
     int num_headers = 0;
     HttpHeader* headers = malloc(sizeof(HttpHeader));
-    HttpQueryParameter* params = malloc(sizeof(HttpQueryParameter));
     HttpHeader* h;
+    char* raw_body = "";
+    int len;
 
     if (argc > 2) {
         optind = 2;
@@ -46,33 +45,45 @@ int main(int argc, char *argv[])
                     num_headers++;
                     headers = realloc(headers, sizeof(HttpHeader) * num_headers);
                     headers[num_headers - 1] = *h;
-                    // realloc headers
-                    // call http_header_new
-                    // add returned header to last spot in headers
-                    
-                    //set header flag
                     break;
                 case 'd':
-                    //set data flag
+                    len = strlen(optarg);
+                    raw_body = malloc(sizeof(char) * (len + 1));
+                    memcpy(raw_body, optarg, len);
+                    raw_body[len] = '\0';
                     break;
                 case 'f':
+                    read_file(raw_body, optarg);
                     //set file flag
                     //ensure d and f are not both specified
                     break;
             }
         }
+        int sock;
         if (strcmp(argv[1], "get") == 0) {
-            int sock;
             HttpUrl* url = http_parse_url(argv[optind]);
             establish_connection(url, &sock);
-            GetRequest* get_r = malloc(sizeof(HttpResponse));
-            get_r->http_headers = headers;
-            get_r->num_headers = num_headers;
-            get_r->url = url;
-            HttpResponse* res = malloc(sizeof(HttpResponse));
-            HttpResponse* r = http_get(&sock, get_r, res);
+            HttpRequest* req = malloc(sizeof(HttpRequest));
+            req->method = "GET";
+            req->http_headers = headers;
+            req->num_headers = num_headers;
+            req->url = url;
+            req->raw_body = NULL;
+            send_request(sock, req);
+            HttpResponse* r = read_response(sock);
             printf("%s", r->raw_body);
         } else if (strcmp(argv[1], "post") == 0) {
+            HttpUrl* url = http_parse_url(argv[optind]);
+            establish_connection(url, &sock);
+            HttpRequest* req = malloc(sizeof(HttpRequest));
+            req->method = "POST";
+            req->http_headers = headers;
+            req->num_headers = num_headers;
+            req->url = url;
+            req->raw_body = raw_body;
+            send_request(sock, req);
+            HttpResponse* r = read_response(sock);
+            printf("%s", r->raw_body);
         } else if (strcmp(argv[1], "help") == 0) {
             print_help(argc, argv);
         } else {
