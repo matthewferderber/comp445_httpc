@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     int num_headers = 0;
     HttpHeader* headers = malloc(sizeof(HttpHeader));
     HttpHeader* h;
-    char* raw_body = "";
+    char* raw_body = NULL;
     int len;
 
     if (argc > 2) {
@@ -47,15 +47,21 @@ int main(int argc, char *argv[])
                     headers[num_headers - 1] = *h;
                     break;
                 case 'd':
+                    if (raw_body != NULL) {
+                        printf("Only one of -f -d can be specified at a time.\n");
+                        exit(1);
+                    }
                     len = strlen(optarg);
                     raw_body = malloc(sizeof(char) * (len + 1));
                     memcpy(raw_body, optarg, len);
                     raw_body[len] = '\0';
                     break;
                 case 'f':
-                    read_file(raw_body, optarg);
-                    //set file flag
-                    //ensure d and f are not both specified
+                    if (raw_body != NULL) {
+                        printf("Only one of -f -d can be specified at a time.\n");
+                        exit(1);
+                    }
+                    read_file(&raw_body, optarg);
                     break;
             }
         }

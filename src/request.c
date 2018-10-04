@@ -132,6 +132,7 @@ char* construct_header_str(HttpHeader* headers, int num_headers) {
         len += v_size + 2;
     }
     buf[len] = '\0';
+    buf = realloc(buf, sizeof(char) * len + 1);
     return buf;
 }
 

@@ -11,8 +11,8 @@
 #include "types.h"
 
 
-int read_file(char* file_contents, char* file_name) {
-    file_contents = malloc(sizeof(char) * MAXDATASIZE);
+int read_file(char** file_contents, char* file_name) {
+    *file_contents = malloc(sizeof(char) * MAXDATASIZE);
     FILE *fp;
     fp = fopen(file_name, "r");
     char c;
@@ -22,12 +22,13 @@ int read_file(char* file_contents, char* file_name) {
     while ((c = fgetc(fp)) != EOF) {
         chunk++;
         if (chunk > MAXDATASIZE) {
-            file_contents = realloc(file_contents, sizeof(char) * (len + MAXDATASIZE));
+            *file_contents = realloc(*file_contents, sizeof(char) * (len + MAXDATASIZE + 1));
             chunk = 0;
         }
-        file_contents[len] = c;
+        (*file_contents)[len] = c;
         len++;
     }
     fclose(fp);
+    (*file_contents)[len] = '\0';
     return len;
 }
