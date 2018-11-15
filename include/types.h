@@ -1,10 +1,10 @@
 //
 // Created by Matthew Ferderber
-// COMP445 Assignment #1
+// COMP445 Assignment #3
 //
 
-#ifndef A1_40010150_TYPES_H
-#define A1_40010150_TYPES_H
+#ifndef A3_40010150_TYPES_H
+#define A3_40010150_TYPES_H
 
 #define MAXDATASIZE 512
 
@@ -44,4 +44,4 @@ typedef struct http_request_t {
     char* raw_body;
 } HttpRequest;
 
-#endif //A1_40010150_TYPES_H
+#endif //A3_40010150_TYPES_H

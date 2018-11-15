@@ -1,6 +1,6 @@
 //
 // Created by Matthew Ferderber
-// COMP445 Assignment #1
+// COMP445 Assignment #3
 //
 
 #include <stdbool.h>

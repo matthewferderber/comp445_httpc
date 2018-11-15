@@ -1,10 +1,10 @@
 //
 // Created by Matthew Ferderber
-// COMP445 Assignment #1
+// COMP445 Assignment #3
 //
 
-#ifndef A1_40010150_HEADER_H
-#define A1_40010150_HEADER_H
+#ifndef A3_40010150_HEADER_H
+#define A3_40010150_HEADER_H
 
 #include "types.h"
 
@@ -13,4 +13,4 @@ void print_headers(HttpHeader* h, int num_headers);
 void http_header_new(HttpHeader* h, char* key, char* value);
 void http_header_destroy(HttpHeader* h);
 
-#endif //A1_40010150_HEADER_H
+#endif //A3_40010150_HEADER_H
